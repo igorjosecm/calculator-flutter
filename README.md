@@ -1,2 +1,2 @@
-# calculator
- calculator made in flutter
+# Calculator
+ A calculator made in flutter
