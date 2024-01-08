@@ -304,7 +304,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
+              children: [
                 CustomButton(
                   buttonSize: buttonSize,
                   text: '7',
