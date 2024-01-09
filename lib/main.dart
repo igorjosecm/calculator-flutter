@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'util/buttons.dart';
 
@@ -348,7 +349,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     onHorizontalDragStart: (details) {
                       _incrementCounter('delete');
                     },
-                    child: Text(
+                    child: SelectableText(
                       _counter,
                       style: const TextStyle(
                         fontSize: 50,
@@ -359,7 +360,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 CustomButton(
                   buttonSize: buttonSize,
@@ -392,7 +393,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 CustomButton(
                   buttonSize: buttonSize,
@@ -425,7 +426,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 CustomButton(
                   buttonSize: buttonSize,
@@ -458,7 +459,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 CustomButton(
                   buttonSize: buttonSize,
@@ -491,7 +492,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 DoubleButton(
                   number: '0',
