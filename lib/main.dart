@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'util/buttons.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,7 +21,7 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.dark,
       darkTheme:
           ThemeData(brightness: Brightness.dark, primarySwatch: Colors.grey),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Calculator Home Page'),
     );
   }
 }
@@ -35,11 +37,14 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   String _counter = '';
+  String _newCounter = '';
   double firstCounter = 0.0;
   String operation = '';
   String _operationDisplay = '';
   final List<String> _operationsHistory = [];
+  final List<String> _operationsHistoryDisplay = [];
   final ScrollController _scrollController = ScrollController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   void _incrementCounter(String key) {
     switch (key) {
@@ -125,7 +130,6 @@ class _MyHomePageState extends State<MyHomePage> {
             _counter = _counter.substring(0, _counter.length - 1);
           }
         });
-        break;
       case '=':
         if (_counter == '') {
           return;
@@ -145,15 +149,27 @@ class _MyHomePageState extends State<MyHomePage> {
         if (operation == '+') {
           result = firstCounter + (double.parse(_counter));
           result = double.parse(result.toStringAsFixed(2));
+          setState(() {
+            _newCounter = _counter;
+          });
         } else if (operation == '-') {
           result = firstCounter - double.parse(_counter);
           result = double.parse(result.toStringAsFixed(2));
+          setState(() {
+            _newCounter = _counter;
+          });
         } else if (operation == 'x') {
           result = firstCounter * double.parse(_counter);
           result = double.parse(result.toStringAsFixed(2));
+          setState(() {
+            _newCounter = _counter;
+          });
         } else if (operation == '/') {
           result = firstCounter / double.parse(_counter);
           result = double.parse(result.toStringAsFixed(2));
+          setState(() {
+            _newCounter = _counter;
+          });
         }
 
         String resultString = result.toString();
@@ -214,6 +230,24 @@ class _MyHomePageState extends State<MyHomePage> {
         _operationDisplay = '$firstCounter $operation';
       });
     }
+
+    if (key == '=') {
+      setState(() {
+        int newFirstCounter = 0;
+        if (firstCounter == firstCounter.toInt()) {
+          newFirstCounter = firstCounter.toInt();
+          _operationsHistoryDisplay
+              .add('$newFirstCounter $operation $_newCounter = $_counter');
+        } else {
+          _operationsHistoryDisplay
+              .add('$firstCounter $operation $_newCounter = $_counter');
+        }
+      });
+    }
+  }
+
+  void closeDrawer(BuildContext context) {
+    Navigator.of(context).pop();
   }
 
   @override
@@ -221,21 +255,76 @@ class _MyHomePageState extends State<MyHomePage> {
     const double buttonSize = 70;
 
     return Scaffold(
+      key: _scaffoldKey,
+      drawer: Drawer(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(
+              height: 90,
+              child: DrawerHeader(
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(20),
+                  ),
+                  color: Colors.orange,
+                ),
+                child: Text(
+                  'Histórico de operações',
+                  style: GoogleFonts.poppins(
+                    fontSize: 22,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                itemCount: _operationsHistoryDisplay.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(_operationsHistoryDisplay[index]),
+                    onTap: () {
+                      setState(() {
+                        _counter = _operationsHistoryDisplay[index]
+                            .split('=')[1]
+                            .trim();
+                        _operationDisplay = _operationsHistoryDisplay[index]
+                            .split('=')[0]
+                            .trim();
+                      });
+                      closeDrawer(context);
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
       body: Container(
         margin: const EdgeInsets.all(10),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  _scaffoldKey.currentState?.openDrawer();
+                },
                 child: ListView.builder(
-              controller: _scrollController,
-              itemCount: _operationsHistory.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(_operationsHistory[index]),
-                );
-              },
-            )),
+                  controller: _scrollController,
+                  itemCount: _operationsHistory.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(_operationsHistory[index]),
+                    );
+                  },
+                ),
+              ),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -304,7 +393,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
+              children: <Widget>[
                 CustomButton(
                   buttonSize: buttonSize,
                   text: '7',
@@ -426,104 +515,6 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class DoubleButton extends StatelessWidget {
-  final String number;
-  final double buttonSize;
-  final Function() fun;
-
-  const DoubleButton({
-    required this.number,
-    required this.buttonSize,
-    required this.fun,
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: (buttonSize * 2) + 20,
-      height: buttonSize,
-      margin: const EdgeInsets.all(5),
-      child: TextButton(
-        style: ButtonStyle(
-          backgroundColor: MaterialStateColor.resolveWith(
-            (states) => Colors.grey[800] as Color,
-          ),
-          overlayColor: MaterialStateProperty.resolveWith<Color?>(
-            (Set<MaterialState> states) {
-              if (states.contains(MaterialState.pressed)) {
-                return const Color.fromARGB(90, 255, 255, 255);
-              }
-              return null;
-            },
-          ),
-        ),
-        onPressed: fun,
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 10),
-            child: Text(
-              number,
-              style: const TextStyle(
-                fontSize: 30,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class CustomButton extends StatelessWidget {
-  final String text;
-  final Function() onPressed;
-  final Color color;
-  final Color? overlayColor;
-  final double buttonSize;
-
-  const CustomButton({
-    required this.text,
-    required this.onPressed,
-    required this.color,
-    this.overlayColor,
-    required this.buttonSize,
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: buttonSize,
-      height: buttonSize,
-      margin: const EdgeInsets.all(5),
-      child: TextButton(
-        style: ButtonStyle(
-          backgroundColor: MaterialStateColor.resolveWith((states) => color),
-          overlayColor: MaterialStateProperty.resolveWith<Color?>(
-            (Set<MaterialState> states) {
-              if (states.contains(MaterialState.pressed)) {
-                return overlayColor;
-              }
-              return null;
-            },
-          ),
-        ),
-        onPressed: onPressed,
-        child: Text(
-          text,
-          style: const TextStyle(
-            fontSize: 30,
-            color: Colors.white,
-          ),
         ),
       ),
     );
