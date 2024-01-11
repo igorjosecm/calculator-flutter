@@ -33,6 +33,18 @@ class _MyHomePageState extends State<MyHomePage> {
     return operationList.contains(buttonLabel);
   }
 
+  double getButtonSize(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    if (screenWidth < 380) {
+      return 70;
+    } else if (screenWidth < 800) {
+      return 80;
+    } else {
+      return 90;
+    }
+  }
+
   void _incrementCounter(String key) {
     switch (key) {
       case '0':
@@ -59,14 +71,18 @@ class _MyHomePageState extends State<MyHomePage> {
         }
         break;
       case '/':
-        operation = key;
-        firstCounter = double.parse(_counter);
-        _counter = '0';
+        if (_counter != '') {
+          operation = key;
+          firstCounter = double.parse(_counter);
+          _counter = '0';
+        }
         break;
       case 'x':
-        operation = key;
-        firstCounter = double.parse(_counter);
-        _counter = '0';
+        if (_counter != '') {
+          operation = key;
+          firstCounter = double.parse(_counter);
+          _counter = '0';
+        }
         break;
       case '-':
         if (_counter != '') {
@@ -162,7 +178,7 @@ class _MyHomePageState extends State<MyHomePage> {
         String resultString = result.toString();
         List<String> resultSplit = resultString.split('.');
 
-        if (resultSplit[1] == '0') {
+        if (resultSplit.length > 1 && resultSplit[1] == '0') {
           setState(() {
             _counter = int.parse(resultSplit[0]).toString();
           });
@@ -233,16 +249,26 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void closeDrawer(BuildContext context) {
-    Navigator.of(context).pop();
-  }
-
   @override
   Widget build(BuildContext context) {
-    const double buttonSize = 70;
-
     return Scaffold(
       key: _scaffoldKey,
+      floatingActionButton: Stack(
+        children: [
+          
+          Positioned(
+            left: 5.0,
+            top: 120,
+            child: FloatingActionButton(
+              backgroundColor: Colors.grey[800] as Color,
+              onPressed: () {
+                _scaffoldKey.currentState?.openDrawer();
+              },
+              child: const Icon(Icons.history, color: Colors.white),
+            ),
+          ),
+        ],
+      ),
       drawer: SafeArea(
         top: true,
         child: OperationsHistoryDrawer(
@@ -256,142 +282,147 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       body: SafeArea(
-        child: Container(
-          margin: const EdgeInsets.all(10),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    _scaffoldKey.currentState?.openDrawer();
-                  },
-                  child: ListView.builder(
-                    controller: _scrollController,
-                    itemCount: _operationsHistory.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(_operationsHistory[index]),
-                      );
-                    },
-                  ),
-                ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              margin: const EdgeInsets.only(top: 15),
+              height: 35,
+              child: ListView.builder(
+                controller: _scrollController,
+                itemCount: _operationsHistory.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: EdgeInsets.zero,
+                    child: ListTile(
+                      title: Text(_operationsHistory[index]),
+                    ),
+                  );
+                },
               ),
-              Row(
+            ),
+            Container(
+              margin: const EdgeInsets.all(10),
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 18.0),
-                    child: Text(
-                      _operationDisplay,
-                      style: const TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 18.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    GestureDetector(
-                      onHorizontalDragStart: (details) {
-                        _incrementCounter('delete');
-                      },
-                      child: SelectableText(
-                        _counter,
-                        style: const TextStyle(
-                          fontSize: 50,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 23.0),
+                        child: Text(
+                          _operationDisplay,
+                          style: const TextStyle(
+                            fontSize: 18,
+                          ),
                         ),
                       ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 18.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        GestureDetector(
+                          onHorizontalDragStart: (details) {
+                            _incrementCounter('delete');
+                          },
+                          child: SelectableText(
+                            _counter,
+                            style: const TextStyle(
+                              fontSize: 50,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: firstList.map<Widget>((number) {
-                  return CustomButton(
-                    buttonSize: buttonSize,
-                    text: number,
-                    onPressed: () => _incrementCounter(number),
-                    color: isOperation(number)
-                        ? Colors.orange
-                        : Colors.grey as Color,
-                    overlayColor: const Color.fromARGB(90, 255, 255, 255),
-                  );
-                }).toList(),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: num7to9List.map<Widget>((number) {
-                  return CustomButton(
-                    buttonSize: buttonSize,
-                    text: number,
-                    onPressed: () => _incrementCounter(number),
-                    color: isOperation(number)
-                        ? Colors.orange
-                        : Colors.grey[800] as Color,
-                    overlayColor: const Color.fromARGB(90, 255, 255, 255),
-                  );
-                }).toList(),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: num4to6List.map<Widget>((number) {
-                  return CustomButton(
-                    buttonSize: buttonSize,
-                    text: number,
-                    onPressed: () => _incrementCounter(number),
-                    color: isOperation(number)
-                        ? Colors.orange
-                        : Colors.grey[800] as Color,
-                    overlayColor: const Color.fromARGB(90, 255, 255, 255),
-                  );
-                }).toList(),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: num1to3List.map<Widget>((number) {
-                  return CustomButton(
-                    buttonSize: buttonSize,
-                    text: number,
-                    onPressed: () => _incrementCounter(number),
-                    color: isOperation(number)
-                        ? Colors.orange
-                        : Colors.grey[800] as Color,
-                    overlayColor: const Color.fromARGB(90, 255, 255, 255),
-                  );
-                }).toList(),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  DoubleButton(
-                    number: '0',
-                    buttonSize: buttonSize,
-                    fun: () => _incrementCounter('0'),
                   ),
-                  CustomButton(
-                    text: ',',
-                    onPressed: () => _incrementCounter('.'),
-                    color: Colors.grey[800] as Color,
-                    buttonSize: buttonSize,
-                    overlayColor: const Color.fromARGB(90, 255, 255, 255),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: firstList.map<Widget>((number) {
+                      return CustomButton(
+                        buttonSize: getButtonSize(context),
+                        text: number,
+                        onPressed: () => _incrementCounter(number),
+                        color: isOperation(number)
+                            ? Colors.orange
+                            : Colors.grey as Color,
+                        overlayColor: const Color.fromARGB(90, 255, 255, 255),
+                      );
+                    }).toList(),
                   ),
-                  CustomButton(
-                    text: '=',
-                    onPressed: () => _incrementCounter('='),
-                    color: Colors.orange,
-                    buttonSize: buttonSize,
-                    overlayColor: const Color.fromARGB(50, 50, 50, 50),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: num7to9List.map<Widget>((number) {
+                      return CustomButton(
+                        buttonSize: getButtonSize(context),
+                        text: number,
+                        onPressed: () => _incrementCounter(number),
+                        color: isOperation(number)
+                            ? Colors.orange
+                            : Colors.grey[800] as Color,
+                        overlayColor: const Color.fromARGB(90, 255, 255, 255),
+                      );
+                    }).toList(),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: num4to6List.map<Widget>((number) {
+                      return CustomButton(
+                        buttonSize: getButtonSize(context),
+                        text: number,
+                        onPressed: () => _incrementCounter(number),
+                        color: isOperation(number)
+                            ? Colors.orange
+                            : Colors.grey[800] as Color,
+                        overlayColor: const Color.fromARGB(90, 255, 255, 255),
+                      );
+                    }).toList(),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: num1to3List.map<Widget>((number) {
+                      return CustomButton(
+                        buttonSize: getButtonSize(context),
+                        text: number,
+                        onPressed: () => _incrementCounter(number),
+                        color: isOperation(number)
+                            ? Colors.orange
+                            : Colors.grey[800] as Color,
+                        overlayColor: const Color.fromARGB(90, 255, 255, 255),
+                      );
+                    }).toList(),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      DoubleButton(
+                        number: '0',
+                        buttonSize: getButtonSize(context),
+                        fun: () => _incrementCounter('0'),
+                      ),
+                      CustomButton(
+                        text: ',',
+                        onPressed: () => _incrementCounter('.'),
+                        color: Colors.grey[800] as Color,
+                        buttonSize: getButtonSize(context),
+                        overlayColor: const Color.fromARGB(90, 255, 255, 255),
+                      ),
+                      CustomButton(
+                        text: '=',
+                        onPressed: () => _incrementCounter('='),
+                        color: Colors.orange,
+                        buttonSize: getButtonSize(context),
+                        overlayColor: const Color.fromARGB(50, 50, 50, 50),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

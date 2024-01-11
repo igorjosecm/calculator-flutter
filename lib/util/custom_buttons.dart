@@ -19,11 +19,12 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: buttonSize,
-      height: buttonSize,
-      margin: const EdgeInsets.all(5),
+      margin: const EdgeInsets.all(6),
       child: TextButton(
         style: ButtonStyle(
+          minimumSize: MaterialStateProperty.all<Size>(
+            Size(buttonSize, buttonSize),
+          ),
           backgroundColor: MaterialStateProperty.resolveWith<Color>(
             (states) => color,
           ),
@@ -37,11 +38,13 @@ class CustomButton extends StatelessWidget {
           ),
         ),
         onPressed: onPressed,
-        child: Text(
-          text,
-          style: const TextStyle(
-            fontSize: 30,
-            color: Colors.white,
+        child: Center(
+          child: Text(
+            text,
+            style: const TextStyle(
+              fontSize: 30,
+              color: Colors.white,
+            ),
           ),
         ),
       ),
@@ -64,11 +67,13 @@ class DoubleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: (buttonSize * 2) + 20,
-      height: buttonSize,
-      margin: const EdgeInsets.all(5),
+      margin: const EdgeInsets.all(6),
       child: TextButton(
         style: ButtonStyle(
+          alignment: Alignment.centerLeft,
+          minimumSize: MaterialStateProperty.all<Size>(
+            Size((buttonSize * 2 + 12), buttonSize),
+          ),
           backgroundColor: MaterialStateColor.resolveWith(
             (states) => Colors.grey[800] as Color,
           ),
@@ -82,10 +87,9 @@ class DoubleButton extends StatelessWidget {
           ),
         ),
         onPressed: fun,
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 10),
+        child: Padding(
+          padding: const EdgeInsets.only(left: 15.0),
+          child: Center(
             child: Text(
               number,
               style: const TextStyle(
