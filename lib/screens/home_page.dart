@@ -33,15 +33,50 @@ class _MyHomePageState extends State<MyHomePage> {
     return operationList.contains(buttonLabel);
   }
 
-  double getButtonSize(BuildContext context) {
+  double getButtonWidth(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+    bool isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
 
-    if (screenWidth < 380) {
-      return 70;
-    } else if (screenWidth < 800) {
-      return 80;
+    if (isLandscape) {
+      return 60;
     } else {
-      return 90;
+      if (screenWidth < 380) {
+        return 70;
+      } else if (screenWidth < 800) {
+        return 80;
+      } else {
+        return 90;
+      }
+    }
+  }
+
+  double getButtonHeight(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    bool isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
+    if (isLandscape) {
+      return 40;
+    } else {
+      if (screenWidth < 380) {
+        return 70;
+      } else if (screenWidth < 800) {
+        return 80;
+      } else {
+        return 90;
+      }
+    }
+  }
+
+  double getFontSize(BuildContext context) {
+    bool isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
+    if (isLandscape) {
+      return 20;
+    } else {
+      return 30;
     }
   }
 
@@ -255,7 +290,6 @@ class _MyHomePageState extends State<MyHomePage> {
       key: _scaffoldKey,
       floatingActionButton: Stack(
         children: [
-          
           Positioned(
             left: 5.0,
             top: 120,
@@ -282,147 +316,338 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              margin: const EdgeInsets.only(top: 15),
-              height: 35,
-              child: ListView.builder(
-                controller: _scrollController,
-                itemCount: _operationsHistory.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: EdgeInsets.zero,
-                    child: ListTile(
-                      title: Text(_operationsHistory[index]),
-                    ),
-                  );
-                },
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.all(10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
+        child: OrientationBuilder(
+          builder: (context, orientation) {
+            if (orientation == Orientation.portrait) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 23.0),
-                        child: Text(
-                          _operationDisplay,
-                          style: const TextStyle(
-                            fontSize: 18,
+                  Container(
+                    margin: const EdgeInsets.only(top: 15),
+                    height: 35,
+                    child: ListView.builder(
+                      controller: _scrollController,
+                      itemCount: _operationsHistory.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: EdgeInsets.zero,
+                          child: ListTile(
+                            title: Text(_operationsHistory[index]),
                           ),
-                        ),
-                      ),
-                    ],
+                        );
+                      },
+                    ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 18.0),
-                    child: Row(
+                  Container(
+                    margin: const EdgeInsets.all(10),
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        GestureDetector(
-                          onHorizontalDragStart: (details) {
-                            _incrementCounter('delete');
-                          },
-                          child: SelectableText(
-                            _counter,
-                            style: const TextStyle(
-                              fontSize: 50,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 23.0),
+                              child: Text(
+                                _operationDisplay,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                ),
+                              ),
                             ),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 18.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              GestureDetector(
+                                onHorizontalDragStart: (details) {
+                                  _incrementCounter('delete');
+                                },
+                                child: SelectableText(
+                                  _counter,
+                                  style: const TextStyle(
+                                    fontSize: 50,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: firstList.map<Widget>((number) {
+                            return CustomButton(
+                              buttonHeight: getButtonHeight(context),
+                              buttonWidth: getButtonWidth(context),
+                              fontSize: getFontSize(context),
+                              text: number,
+                              onPressed: () => _incrementCounter(number),
+                              color: isOperation(number)
+                                  ? Colors.orange
+                                  : Colors.grey as Color,
+                              overlayColor:
+                                  const Color.fromARGB(90, 255, 255, 255),
+                            );
+                          }).toList(),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: num7to9List.map<Widget>((number) {
+                            return CustomButton(
+                              buttonHeight: getButtonHeight(context),
+                              buttonWidth: getButtonWidth(context),
+                              fontSize: getFontSize(context),
+                              text: number,
+                              onPressed: () => _incrementCounter(number),
+                              color: isOperation(number)
+                                  ? Colors.orange
+                                  : Colors.grey[800] as Color,
+                              overlayColor:
+                                  const Color.fromARGB(90, 255, 255, 255),
+                            );
+                          }).toList(),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: num4to6List.map<Widget>((number) {
+                            return CustomButton(
+                              buttonHeight: getButtonHeight(context),
+                              buttonWidth: getButtonWidth(context),
+                              fontSize: getFontSize(context),
+                              text: number,
+                              onPressed: () => _incrementCounter(number),
+                              color: isOperation(number)
+                                  ? Colors.orange
+                                  : Colors.grey[800] as Color,
+                              overlayColor:
+                                  const Color.fromARGB(90, 255, 255, 255),
+                            );
+                          }).toList(),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: num1to3List.map<Widget>((number) {
+                            return CustomButton(
+                              buttonHeight: getButtonHeight(context),
+                              buttonWidth: getButtonWidth(context),
+                              fontSize: getFontSize(context),
+                              text: number,
+                              onPressed: () => _incrementCounter(number),
+                              color: isOperation(number)
+                                  ? Colors.orange
+                                  : Colors.grey[800] as Color,
+                              overlayColor:
+                                  const Color.fromARGB(90, 255, 255, 255),
+                            );
+                          }).toList(),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            DoubleButton(
+                              number: '0',
+                              buttonHeight: getButtonHeight(context),
+                              buttonWidth: getButtonWidth(context),
+                              fontSize: getFontSize(context),
+                              fun: () => _incrementCounter('0'),
+                            ),
+                            CustomButton(
+                              text: ',',
+                              onPressed: () => _incrementCounter('.'),
+                              color: Colors.grey[800] as Color,
+                              buttonHeight: getButtonHeight(context),
+                              buttonWidth: getButtonWidth(context),
+                              fontSize: getFontSize(context),
+                              overlayColor:
+                                  const Color.fromARGB(90, 255, 255, 255),
+                            ),
+                            CustomButton(
+                              text: '=',
+                              onPressed: () => _incrementCounter('='),
+                              color: Colors.orange,
+                              buttonHeight: getButtonHeight(context),
+                              buttonWidth: getButtonWidth(context),
+                              fontSize: getFontSize(context),
+                              overlayColor:
+                                  const Color.fromARGB(50, 50, 50, 50),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            } else {
+              return GridView.count(
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: 2,
+                children: <Widget>[
+                  Container(
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  GestureDetector(
+                                    onHorizontalDragStart: (details) {
+                                      _incrementCounter('delete');
+                                    },
+                                    child: SelectableText(
+                                      _counter,
+                                      style: const TextStyle(
+                                        fontSize: 40,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 23.0),
+                              child: Text(
+                                _operationDisplay,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.all(10),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: firstList.map<Widget>((number) {
+                                  return CustomButton(
+                                    buttonHeight: getButtonHeight(context),
+                                    buttonWidth: getButtonWidth(context),
+                                    fontSize: getFontSize(context),
+                                    text: number,
+                                    onPressed: () => _incrementCounter(number),
+                                    color: isOperation(number)
+                                        ? Colors.orange
+                                        : Colors.grey as Color,
+                                    overlayColor:
+                                        const Color.fromARGB(90, 255, 255, 255),
+                                  );
+                                }).toList(),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: num7to9List.map<Widget>((number) {
+                                  return CustomButton(
+                                    buttonHeight: getButtonHeight(context),
+                                    buttonWidth: getButtonWidth(context),
+                                    fontSize: getFontSize(context),
+                                    text: number,
+                                    onPressed: () => _incrementCounter(number),
+                                    color: isOperation(number)
+                                        ? Colors.orange
+                                        : Colors.grey[800] as Color,
+                                    overlayColor:
+                                        const Color.fromARGB(90, 255, 255, 255),
+                                  );
+                                }).toList(),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: num4to6List.map<Widget>((number) {
+                                  return CustomButton(
+                                    buttonHeight: getButtonHeight(context),
+                                    buttonWidth: getButtonWidth(context),
+                                    fontSize: getFontSize(context),
+                                    text: number,
+                                    onPressed: () => _incrementCounter(number),
+                                    color: isOperation(number)
+                                        ? Colors.orange
+                                        : Colors.grey[800] as Color,
+                                    overlayColor:
+                                        const Color.fromARGB(90, 255, 255, 255),
+                                  );
+                                }).toList(),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: num1to3List.map<Widget>((number) {
+                                  return CustomButton(
+                                    buttonHeight: getButtonHeight(context),
+                                    buttonWidth: getButtonWidth(context),
+                                    fontSize: getFontSize(context),
+                                    text: number,
+                                    onPressed: () => _incrementCounter(number),
+                                    color: isOperation(number)
+                                        ? Colors.orange
+                                        : Colors.grey[800] as Color,
+                                    overlayColor:
+                                        const Color.fromARGB(90, 255, 255, 255),
+                                  );
+                                }).toList(),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  DoubleButton(
+                                    number: '0',
+                                    buttonHeight: getButtonHeight(context),
+                                    buttonWidth: getButtonWidth(context),
+                                    fontSize: getFontSize(context),
+                                    fun: () => _incrementCounter('0'),
+                                  ),
+                                  CustomButton(
+                                    text: ',',
+                                    onPressed: () => _incrementCounter('.'),
+                                    color: Colors.grey[800] as Color,
+                                    buttonHeight: getButtonHeight(context),
+                                    buttonWidth: getButtonWidth(context),
+                                    fontSize: getFontSize(context),
+                                    overlayColor:
+                                        const Color.fromARGB(90, 255, 255, 255),
+                                  ),
+                                  CustomButton(
+                                    text: '=',
+                                    onPressed: () => _incrementCounter('='),
+                                    color: Colors.orange,
+                                    buttonHeight: getButtonHeight(context),
+                                    buttonWidth: getButtonWidth(context),
+                                    fontSize: getFontSize(context),
+                                    overlayColor:
+                                        const Color.fromARGB(50, 50, 50, 50),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: firstList.map<Widget>((number) {
-                      return CustomButton(
-                        buttonSize: getButtonSize(context),
-                        text: number,
-                        onPressed: () => _incrementCounter(number),
-                        color: isOperation(number)
-                            ? Colors.orange
-                            : Colors.grey as Color,
-                        overlayColor: const Color.fromARGB(90, 255, 255, 255),
-                      );
-                    }).toList(),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: num7to9List.map<Widget>((number) {
-                      return CustomButton(
-                        buttonSize: getButtonSize(context),
-                        text: number,
-                        onPressed: () => _incrementCounter(number),
-                        color: isOperation(number)
-                            ? Colors.orange
-                            : Colors.grey[800] as Color,
-                        overlayColor: const Color.fromARGB(90, 255, 255, 255),
-                      );
-                    }).toList(),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: num4to6List.map<Widget>((number) {
-                      return CustomButton(
-                        buttonSize: getButtonSize(context),
-                        text: number,
-                        onPressed: () => _incrementCounter(number),
-                        color: isOperation(number)
-                            ? Colors.orange
-                            : Colors.grey[800] as Color,
-                        overlayColor: const Color.fromARGB(90, 255, 255, 255),
-                      );
-                    }).toList(),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: num1to3List.map<Widget>((number) {
-                      return CustomButton(
-                        buttonSize: getButtonSize(context),
-                        text: number,
-                        onPressed: () => _incrementCounter(number),
-                        color: isOperation(number)
-                            ? Colors.orange
-                            : Colors.grey[800] as Color,
-                        overlayColor: const Color.fromARGB(90, 255, 255, 255),
-                      );
-                    }).toList(),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      DoubleButton(
-                        number: '0',
-                        buttonSize: getButtonSize(context),
-                        fun: () => _incrementCounter('0'),
-                      ),
-                      CustomButton(
-                        text: ',',
-                        onPressed: () => _incrementCounter('.'),
-                        color: Colors.grey[800] as Color,
-                        buttonSize: getButtonSize(context),
-                        overlayColor: const Color.fromARGB(90, 255, 255, 255),
-                      ),
-                      CustomButton(
-                        text: '=',
-                        onPressed: () => _incrementCounter('='),
-                        color: Colors.orange,
-                        buttonSize: getButtonSize(context),
-                        overlayColor: const Color.fromARGB(50, 50, 50, 50),
-                      ),
-                    ],
-                  ),
                 ],
-              ),
-            ),
-          ],
+              );
+            }
+          },
         ),
       ),
     );

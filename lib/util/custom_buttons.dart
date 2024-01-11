@@ -5,14 +5,18 @@ class CustomButton extends StatelessWidget {
   final VoidCallback onPressed;
   final Color color;
   final Color? overlayColor;
-  final double buttonSize;
+  final double buttonHeight;
+  final double buttonWidth;
+  final double? fontSize;
 
   const CustomButton({
     required this.text,
     required this.onPressed,
     required this.color,
     this.overlayColor,
-    required this.buttonSize,
+    required this.buttonHeight,
+    required this.buttonWidth,
+    required this.fontSize,
     super.key,
   });
 
@@ -23,7 +27,7 @@ class CustomButton extends StatelessWidget {
       child: TextButton(
         style: ButtonStyle(
           minimumSize: MaterialStateProperty.all<Size>(
-            Size(buttonSize, buttonSize),
+            Size(buttonWidth, buttonHeight),
           ),
           backgroundColor: MaterialStateProperty.resolveWith<Color>(
             (states) => color,
@@ -41,8 +45,8 @@ class CustomButton extends StatelessWidget {
         child: Center(
           child: Text(
             text,
-            style: const TextStyle(
-              fontSize: 30,
+            style: TextStyle(
+              fontSize: fontSize,
               color: Colors.white,
             ),
           ),
@@ -54,13 +58,17 @@ class CustomButton extends StatelessWidget {
 
 class DoubleButton extends StatelessWidget {
   final String number;
-  final double buttonSize;
+  final double buttonHeight;
+  final double buttonWidth;
   final Function() fun;
+  final double? fontSize;
 
   const DoubleButton({
     required this.number,
-    required this.buttonSize,
     required this.fun,
+    required this.buttonHeight,
+    required this.buttonWidth,
+    required this.fontSize,
     super.key,
   });
 
@@ -72,7 +80,7 @@ class DoubleButton extends StatelessWidget {
         style: ButtonStyle(
           alignment: Alignment.centerLeft,
           minimumSize: MaterialStateProperty.all<Size>(
-            Size((buttonSize * 2 + 12), buttonSize),
+            Size((buttonWidth * 2 + 12), buttonHeight),
           ),
           backgroundColor: MaterialStateColor.resolveWith(
             (states) => Colors.grey[800] as Color,
@@ -92,8 +100,8 @@ class DoubleButton extends StatelessWidget {
           child: Center(
             child: Text(
               number,
-              style: const TextStyle(
-                fontSize: 30,
+              style: TextStyle(
+                fontSize: fontSize,
                 color: Colors.white,
               ),
             ),
