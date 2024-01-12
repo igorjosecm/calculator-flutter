@@ -24,6 +24,16 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.all(6),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(50),
+        boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.1),
+          spreadRadius: 1,
+          blurRadius: 6,
+          offset: const Offset(0, 0),
+        ),
+      ]),
       child: TextButton(
         style: ButtonStyle(
           minimumSize: MaterialStateProperty.all<Size>(
@@ -48,62 +58,6 @@ class CustomButton extends StatelessWidget {
             style: TextStyle(
               fontSize: fontSize,
               color: Colors.white,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class DoubleButton extends StatelessWidget {
-  final String number;
-  final double buttonHeight;
-  final double buttonWidth;
-  final Function() fun;
-  final double? fontSize;
-
-  const DoubleButton({
-    required this.number,
-    required this.fun,
-    required this.buttonHeight,
-    required this.buttonWidth,
-    required this.fontSize,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(6),
-      child: TextButton(
-        style: ButtonStyle(
-          alignment: Alignment.centerLeft,
-          minimumSize: MaterialStateProperty.all<Size>(
-            Size((buttonWidth * 2 + 16), buttonHeight),
-          ),
-          backgroundColor: MaterialStateColor.resolveWith(
-            (states) => Colors.grey[800] as Color,
-          ),
-          overlayColor: MaterialStateProperty.resolveWith<Color?>(
-            (Set<MaterialState> states) {
-              if (states.contains(MaterialState.pressed)) {
-                return const Color.fromARGB(90, 255, 255, 255);
-              }
-              return null;
-            },
-          ),
-        ),
-        onPressed: fun,
-        child: Padding(
-          padding: const EdgeInsets.only(left: 15.0),
-          child: Center(
-            child: Text(
-              number,
-              style: TextStyle(
-                fontSize: fontSize,
-                color: Colors.white,
-              ),
             ),
           ),
         ),

@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.grey),
         useMaterial3: true,
       ),
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.system,
       darkTheme:
           ThemeData(brightness: Brightness.dark, primarySwatch: Colors.grey),
       home: const MyHomePage(title: 'Calculator Home Page'),

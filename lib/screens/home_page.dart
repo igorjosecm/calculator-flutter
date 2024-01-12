@@ -48,11 +48,12 @@ class _MyHomePageState extends State<MyHomePage> {
       case '8':
       case '9':
       case '.00':
-        if (_counter == '0') {
+        if (key == '.00' && _counter.contains('.')) {
+        } else if (_counter == '0') {
           setState(() {
             _counter = key;
           });
-        } else if (_counter.length < 10) {
+        } else if (_counter.length < 9) {
           setState(() {
             _counter += key;
           });
@@ -168,7 +169,7 @@ class _MyHomePageState extends State<MyHomePage> {
         }
 
         if (operation == '+') {
-          result = firstCounter + (double.parse(_counter));
+          result = firstCounter + (double.parse(_counter)) - 10;
           setState(() {
             _newCounter = _counter;
           });
@@ -191,7 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
         if (result.abs() < 1) {
           setState(() {
-          result = double.parse(result.toStringAsFixed(9)); 
+            result = double.parse(result.toStringAsFixed(9));
             _counter = result.toString();
           });
           if (result.abs() < 0.00005) {
@@ -291,6 +292,7 @@ class _MyHomePageState extends State<MyHomePage> {
             left: 5.0,
             top: 120,
             child: FloatingActionButton(
+              elevation: 1,
               backgroundColor: Colors.grey[800] as Color,
               onPressed: () {
                 _scaffoldKey.currentState?.openDrawer();

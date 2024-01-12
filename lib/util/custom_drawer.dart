@@ -15,6 +15,7 @@ class OperationsHistoryDrawer extends StatelessWidget {
     return SafeArea(
       top: true,
       child: Drawer(
+        elevation: 0,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -23,7 +24,7 @@ class OperationsHistoryDrawer extends StatelessWidget {
               child: DrawerHeader(
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(20),
+                    topRight: Radius.circular(10),
                   ),
                   color: Colors.orange,
                 ),
