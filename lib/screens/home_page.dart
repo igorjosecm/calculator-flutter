@@ -1,6 +1,7 @@
-import 'package:calculator/util/custom_buttons.dart';
-import 'package:calculator/util/custom_drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:calculator/util/custom_drawer.dart';
+import 'package:calculator/screens/portrait_screen.dart';
+import 'package:calculator/screens/landscape_screen.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -12,7 +13,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String _counter = '';
+  String _counter = '0';
   String _newCounter = '';
   double firstCounter = 0.0;
   String operation = '';
@@ -33,53 +34,6 @@ class _MyHomePageState extends State<MyHomePage> {
     return operationList.contains(buttonLabel);
   }
 
-  double getButtonWidth(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    bool isLandscape =
-        MediaQuery.of(context).orientation == Orientation.landscape;
-
-    if (isLandscape) {
-      return 60;
-    } else {
-      if (screenWidth < 380) {
-        return 70;
-      } else if (screenWidth < 800) {
-        return 80;
-      } else {
-        return 90;
-      }
-    }
-  }
-
-  double getButtonHeight(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    bool isLandscape =
-        MediaQuery.of(context).orientation == Orientation.landscape;
-
-    if (isLandscape) {
-      return 40;
-    } else {
-      if (screenWidth < 380) {
-        return 70;
-      } else if (screenWidth < 800) {
-        return 80;
-      } else {
-        return 90;
-      }
-    }
-  }
-
-  double getFontSize(BuildContext context) {
-    bool isLandscape =
-        MediaQuery.of(context).orientation == Orientation.landscape;
-
-    if (isLandscape) {
-      return 20;
-    } else {
-      return 30;
-    }
-  }
-
   void _incrementCounter(String key) {
     switch (key) {
       case '0':
@@ -97,7 +51,6 @@ class _MyHomePageState extends State<MyHomePage> {
         } else if (_counter.length < 10) {
           setState(() {
             _counter += key;
-
             if (!_counter.contains('.')) {
               int counterInt = int.parse(_counter);
               _counter = counterInt.toString();
@@ -106,51 +59,69 @@ class _MyHomePageState extends State<MyHomePage> {
         }
         break;
       case '/':
-        if (_counter != '') {
+        if (_counter != '0') {
           operation = key;
           firstCounter = double.parse(_counter);
-          _counter = '0';
+          if (firstCounter == 0.0) {
+            firstCounter = double.parse(_counter);
+            _counter = '0';
+          } else if (_counter != '0') {
+            _counter = '0';
+          }
         }
         break;
       case 'x':
-        if (_counter != '') {
+        if (_counter != '0') {
           operation = key;
           firstCounter = double.parse(_counter);
-          _counter = '0';
+          if (firstCounter == 0.0) {
+            firstCounter = double.parse(_counter);
+            _counter = '0';
+          } else if (_counter != '0') {
+            _counter = '0';
+          }
         }
         break;
       case '-':
-        if (_counter != '') {
+        if (_counter != '0') {
           operation = key;
           firstCounter = double.parse(_counter);
-          _counter = '0';
+          if (firstCounter == 0.0) {
+            firstCounter = double.parse(_counter);
+            _counter = '0';
+          } else if (_counter != '0') {
+            _counter = '0';
+          }
         }
         break;
       case '+':
-        if (_counter != '') {
+        if (_counter != '0') {
           operation = key;
           firstCounter = double.parse(_counter);
-          _counter = '0';
+          if (firstCounter == 0.0) {
+            firstCounter = double.parse(_counter);
+            _counter = '0';
+          } else if (_counter != '0') {
+            _counter = '0';
+          }
         }
         break;
       case '%':
-        if (_counter != '') {
-          if (_counter != '0' &&
-              _counter != double.negativeInfinity.toString() &&
-              firstCounter != double.negativeInfinity) {
-            double counterValue = double.parse(_counter);
-            if (counterValue < 0) {
-            } else {
-              setState(() {
-                firstCounter = counterValue / 100;
-                _counter = firstCounter.toString();
-              });
-            }
+        if (_counter != '0' &&
+            _counter != double.negativeInfinity.toString() &&
+            firstCounter != double.negativeInfinity) {
+          double counterValue = double.parse(_counter);
+          if (counterValue < 0) {
+          } else {
+            setState(() {
+              firstCounter = counterValue / 100;
+              _counter = firstCounter.toString();
+            });
           }
         }
         break;
       case '+/-':
-        if (_counter != '' && _counter != '0') {
+        if (_counter != '0') {
           if (_counter[0] == '-') {
             setState(() {
               _counter = _counter.substring(1);
@@ -164,12 +135,12 @@ class _MyHomePageState extends State<MyHomePage> {
         break;
       case 'delete':
         setState(() {
-          if (_counter != '') {
+          if (_counter != '0') {
             _counter = _counter.substring(0, _counter.length - 1);
           }
         });
       case '=':
-        if (_counter == '') {
+        if (_counter == '0') {
           return;
         }
 
@@ -238,18 +209,23 @@ class _MyHomePageState extends State<MyHomePage> {
           _operationsHistory.add('= $_counter');
         });
 
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          _scrollController.animateTo(
-            _scrollController.position.maxScrollExtent,
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeOut,
-          );
-        });
+        bool isPortrait =
+            MediaQuery.of(context).orientation == Orientation.portrait;
+
+        if (isPortrait) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _scrollController.animateTo(
+              _scrollController.position.maxScrollExtent,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeOut,
+            );
+          });
+        }
 
         break;
       case 'AC':
         setState(() {
-          _counter = '';
+          _counter = '0';
           firstCounter = 0.0;
           _operationDisplay = '';
         });
@@ -319,332 +295,28 @@ class _MyHomePageState extends State<MyHomePage> {
         child: OrientationBuilder(
           builder: (context, orientation) {
             if (orientation == Orientation.portrait) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(top: 15),
-                    height: 35,
-                    child: ListView.builder(
-                      controller: _scrollController,
-                      itemCount: _operationsHistory.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: EdgeInsets.zero,
-                          child: ListTile(
-                            title: Text(_operationsHistory[index]),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.all(10),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(right: 23.0),
-                              child: Text(
-                                _operationDisplay,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 18.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              GestureDetector(
-                                onHorizontalDragStart: (details) {
-                                  _incrementCounter('delete');
-                                },
-                                child: SelectableText(
-                                  _counter,
-                                  style: const TextStyle(
-                                    fontSize: 50,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: firstList.map<Widget>((number) {
-                            return CustomButton(
-                              buttonHeight: getButtonHeight(context),
-                              buttonWidth: getButtonWidth(context),
-                              fontSize: getFontSize(context),
-                              text: number,
-                              onPressed: () => _incrementCounter(number),
-                              color: isOperation(number)
-                                  ? Colors.orange
-                                  : Colors.grey as Color,
-                              overlayColor:
-                                  const Color.fromARGB(90, 255, 255, 255),
-                            );
-                          }).toList(),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: num7to9List.map<Widget>((number) {
-                            return CustomButton(
-                              buttonHeight: getButtonHeight(context),
-                              buttonWidth: getButtonWidth(context),
-                              fontSize: getFontSize(context),
-                              text: number,
-                              onPressed: () => _incrementCounter(number),
-                              color: isOperation(number)
-                                  ? Colors.orange
-                                  : Colors.grey[800] as Color,
-                              overlayColor:
-                                  const Color.fromARGB(90, 255, 255, 255),
-                            );
-                          }).toList(),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: num4to6List.map<Widget>((number) {
-                            return CustomButton(
-                              buttonHeight: getButtonHeight(context),
-                              buttonWidth: getButtonWidth(context),
-                              fontSize: getFontSize(context),
-                              text: number,
-                              onPressed: () => _incrementCounter(number),
-                              color: isOperation(number)
-                                  ? Colors.orange
-                                  : Colors.grey[800] as Color,
-                              overlayColor:
-                                  const Color.fromARGB(90, 255, 255, 255),
-                            );
-                          }).toList(),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: num1to3List.map<Widget>((number) {
-                            return CustomButton(
-                              buttonHeight: getButtonHeight(context),
-                              buttonWidth: getButtonWidth(context),
-                              fontSize: getFontSize(context),
-                              text: number,
-                              onPressed: () => _incrementCounter(number),
-                              color: isOperation(number)
-                                  ? Colors.orange
-                                  : Colors.grey[800] as Color,
-                              overlayColor:
-                                  const Color.fromARGB(90, 255, 255, 255),
-                            );
-                          }).toList(),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            DoubleButton(
-                              number: '0',
-                              buttonHeight: getButtonHeight(context),
-                              buttonWidth: getButtonWidth(context),
-                              fontSize: getFontSize(context),
-                              fun: () => _incrementCounter('0'),
-                            ),
-                            CustomButton(
-                              text: ',',
-                              onPressed: () => _incrementCounter('.'),
-                              color: Colors.grey[800] as Color,
-                              buttonHeight: getButtonHeight(context),
-                              buttonWidth: getButtonWidth(context),
-                              fontSize: getFontSize(context),
-                              overlayColor:
-                                  const Color.fromARGB(90, 255, 255, 255),
-                            ),
-                            CustomButton(
-                              text: '=',
-                              onPressed: () => _incrementCounter('='),
-                              color: Colors.orange,
-                              buttonHeight: getButtonHeight(context),
-                              buttonWidth: getButtonWidth(context),
-                              fontSize: getFontSize(context),
-                              overlayColor:
-                                  const Color.fromARGB(50, 50, 50, 50),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+              return PortraitWidget(
+                scrollController: _scrollController,
+                operationsHistory: _operationsHistory,
+                operationDisplay: _operationDisplay,
+                counter: _counter,
+                incrementCounter: _incrementCounter,
+                isOperation: isOperation,
+                firstList: firstList,
+                num7to9List: num7to9List,
+                num4to6List: num4to6List,
+                num1to3List: num1to3List,
               );
             } else {
-              return GridView.count(
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisCount: 2,
-                children: <Widget>[
-                  Container(
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 10),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  GestureDetector(
-                                    onHorizontalDragStart: (details) {
-                                      _incrementCounter('delete');
-                                    },
-                                    child: SelectableText(
-                                      _counter,
-                                      style: const TextStyle(
-                                        fontSize: 40,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(right: 23.0),
-                              child: Text(
-                                _operationDisplay,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    child: Column(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.all(10),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: firstList.map<Widget>((number) {
-                                  return CustomButton(
-                                    buttonHeight: getButtonHeight(context),
-                                    buttonWidth: getButtonWidth(context),
-                                    fontSize: getFontSize(context),
-                                    text: number,
-                                    onPressed: () => _incrementCounter(number),
-                                    color: isOperation(number)
-                                        ? Colors.orange
-                                        : Colors.grey as Color,
-                                    overlayColor:
-                                        const Color.fromARGB(90, 255, 255, 255),
-                                  );
-                                }).toList(),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: num7to9List.map<Widget>((number) {
-                                  return CustomButton(
-                                    buttonHeight: getButtonHeight(context),
-                                    buttonWidth: getButtonWidth(context),
-                                    fontSize: getFontSize(context),
-                                    text: number,
-                                    onPressed: () => _incrementCounter(number),
-                                    color: isOperation(number)
-                                        ? Colors.orange
-                                        : Colors.grey[800] as Color,
-                                    overlayColor:
-                                        const Color.fromARGB(90, 255, 255, 255),
-                                  );
-                                }).toList(),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: num4to6List.map<Widget>((number) {
-                                  return CustomButton(
-                                    buttonHeight: getButtonHeight(context),
-                                    buttonWidth: getButtonWidth(context),
-                                    fontSize: getFontSize(context),
-                                    text: number,
-                                    onPressed: () => _incrementCounter(number),
-                                    color: isOperation(number)
-                                        ? Colors.orange
-                                        : Colors.grey[800] as Color,
-                                    overlayColor:
-                                        const Color.fromARGB(90, 255, 255, 255),
-                                  );
-                                }).toList(),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: num1to3List.map<Widget>((number) {
-                                  return CustomButton(
-                                    buttonHeight: getButtonHeight(context),
-                                    buttonWidth: getButtonWidth(context),
-                                    fontSize: getFontSize(context),
-                                    text: number,
-                                    onPressed: () => _incrementCounter(number),
-                                    color: isOperation(number)
-                                        ? Colors.orange
-                                        : Colors.grey[800] as Color,
-                                    overlayColor:
-                                        const Color.fromARGB(90, 255, 255, 255),
-                                  );
-                                }).toList(),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  DoubleButton(
-                                    number: '0',
-                                    buttonHeight: getButtonHeight(context),
-                                    buttonWidth: getButtonWidth(context),
-                                    fontSize: getFontSize(context),
-                                    fun: () => _incrementCounter('0'),
-                                  ),
-                                  CustomButton(
-                                    text: ',',
-                                    onPressed: () => _incrementCounter('.'),
-                                    color: Colors.grey[800] as Color,
-                                    buttonHeight: getButtonHeight(context),
-                                    buttonWidth: getButtonWidth(context),
-                                    fontSize: getFontSize(context),
-                                    overlayColor:
-                                        const Color.fromARGB(90, 255, 255, 255),
-                                  ),
-                                  CustomButton(
-                                    text: '=',
-                                    onPressed: () => _incrementCounter('='),
-                                    color: Colors.orange,
-                                    buttonHeight: getButtonHeight(context),
-                                    buttonWidth: getButtonWidth(context),
-                                    fontSize: getFontSize(context),
-                                    overlayColor:
-                                        const Color.fromARGB(50, 50, 50, 50),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+              return LandscapeWidget(
+                counter: _counter,
+                operationDisplay: _operationDisplay,
+                incrementCounter: _incrementCounter,
+                isOperation: isOperation,
+                firstList: firstList,
+                num7to9List: num7to9List,
+                num4to6List: num4to6List,
+                num1to3List: num1to3List,
               );
             }
           },

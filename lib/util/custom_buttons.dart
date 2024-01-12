@@ -80,7 +80,7 @@ class DoubleButton extends StatelessWidget {
         style: ButtonStyle(
           alignment: Alignment.centerLeft,
           minimumSize: MaterialStateProperty.all<Size>(
-            Size((buttonWidth * 2 + 12), buttonHeight),
+            Size((buttonWidth * 2 + 16), buttonHeight),
           ),
           backgroundColor: MaterialStateColor.resolveWith(
             (states) => Colors.grey[800] as Color,
