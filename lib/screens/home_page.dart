@@ -339,6 +339,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 num7to9List: num7to9List,
                 num4to6List: num4to6List,
                 num1to3List: num1to3List,
+                num0List: num0List,
               );
             }
           },
