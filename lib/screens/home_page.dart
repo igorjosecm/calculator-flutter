@@ -28,9 +28,10 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<String> num7to9List = ['7', '8', '9', 'x'];
   final List<String> num4to6List = ['4', '5', '6', '-'];
   final List<String> num1to3List = ['1', '2', '3', '+'];
+  final List<String> num0List = ['.00', '0', '.', '='];
 
   bool isOperation(String buttonLabel) {
-    const operationList = ['/', 'x', '-', '+'];
+    const operationList = ['/', 'x', '-', '+', '='];
     return operationList.contains(buttonLabel);
   }
 
@@ -46,6 +47,17 @@ class _MyHomePageState extends State<MyHomePage> {
       case '7':
       case '8':
       case '9':
+      case '.00':
+        if (_counter == '0') {
+          setState(() {
+            _counter = key;
+          });
+        } else if (_counter.length < 10) {
+          setState(() {
+            _counter += key;
+          });
+        }
+        break;
       case '.':
         if (key == '.' && _counter.contains('.')) {
         } else if (_counter.length < 10) {
@@ -157,48 +169,57 @@ class _MyHomePageState extends State<MyHomePage> {
 
         if (operation == '+') {
           result = firstCounter + (double.parse(_counter));
-          result = double.parse(result.toStringAsFixed(2));
           setState(() {
             _newCounter = _counter;
           });
         } else if (operation == '-') {
           result = firstCounter - double.parse(_counter);
-          result = double.parse(result.toStringAsFixed(2));
           setState(() {
             _newCounter = _counter;
           });
         } else if (operation == 'x') {
           result = firstCounter * double.parse(_counter);
-          result = double.parse(result.toStringAsFixed(2));
           setState(() {
             _newCounter = _counter;
           });
         } else if (operation == '/') {
           result = firstCounter / double.parse(_counter);
-          result = double.parse(result.toStringAsFixed(2));
           setState(() {
             _newCounter = _counter;
           });
         }
 
-        String resultString = result.toString();
-        List<String> resultSplit = resultString.split('.');
-
-        if (resultSplit.length > 1 && resultSplit[1] == '0') {
+        if (result.abs() < 1) {
           setState(() {
-            _counter = int.parse(resultSplit[0]).toString();
-          });
-        } else {
-          setState(() {
+          result = double.parse(result.toStringAsFixed(9)); 
             _counter = result.toString();
           });
-        }
+          if (result.abs() < 0.00005) {
+            setState(() {
+              _counter = result.toStringAsExponential(2);
+            });
+          }
+        } else {
+          result = double.parse(result.toStringAsFixed(2));
+          String resultString = result.toString();
+          List<String> resultSplit = resultString.split('.');
 
-        if (resultString.length > 10) {
-          setState(() {
-            resultString = result.toStringAsExponential(2);
-            _counter = resultString;
-          });
+          if (resultSplit.length > 1 && resultSplit[1] == '0') {
+            setState(() {
+              _counter = int.parse(resultSplit[0]).toString();
+            });
+          } else {
+            setState(() {
+              _counter = result.toString();
+            });
+          }
+
+          if (resultString.length > 10) {
+            setState(() {
+              resultString = result.toStringAsExponential(2);
+              _counter = resultString;
+            });
+          }
         }
 
         setState(() {
@@ -306,6 +327,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 num7to9List: num7to9List,
                 num4to6List: num4to6List,
                 num1to3List: num1to3List,
+                num0List: num0List,
               );
             } else {
               return LandscapeWidget(

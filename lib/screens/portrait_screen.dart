@@ -13,6 +13,7 @@ class PortraitWidget extends StatelessWidget {
   final List<String> num7to9List;
   final List<String> num4to6List;
   final List<String> num1to3List;
+  final List<String> num0List;
 
   const PortraitWidget({
     required this.scrollController,
@@ -25,6 +26,7 @@ class PortraitWidget extends StatelessWidget {
     required this.num7to9List,
     required this.num4to6List,
     required this.num1to3List,
+    required this.num0List,
     super.key,
   });
 
@@ -153,33 +155,19 @@ class PortraitWidget extends StatelessWidget {
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  DoubleButton(
-                    number: '0',
+                children: num0List.map<Widget>((number) {
+                  return CustomButton(
                     buttonHeight: getButtonHeight(context),
                     buttonWidth: getButtonWidth(context),
                     fontSize: getFontSize(context),
-                    fun: () => incrementCounter('0'),
-                  ),
-                  CustomButton(
-                    text: ',',
-                    onPressed: () => incrementCounter('.'),
-                    color: Colors.grey[800] as Color,
-                    buttonHeight: getButtonHeight(context),
-                    buttonWidth: getButtonWidth(context),
-                    fontSize: getFontSize(context),
+                    text: number,
+                    onPressed: () => incrementCounter(number),
+                    color: isOperation(number)
+                        ? Colors.orange
+                        : Colors.grey[800] as Color,
                     overlayColor: const Color.fromARGB(90, 255, 255, 255),
-                  ),
-                  CustomButton(
-                    text: '=',
-                    onPressed: () => incrementCounter('='),
-                    color: Colors.orange,
-                    buttonHeight: getButtonHeight(context),
-                    buttonWidth: getButtonWidth(context),
-                    fontSize: getFontSize(context),
-                    overlayColor: const Color.fromARGB(50, 50, 50, 50),
-                  ),
-                ],
+                  );
+                }).toList(),
               ),
             ],
           ),
