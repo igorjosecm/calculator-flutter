@@ -169,7 +169,7 @@ class _MyHomePageState extends State<MyHomePage> {
         }
 
         if (operation == '+') {
-          result = firstCounter + (double.parse(_counter)) - 10;
+          result = firstCounter + (double.parse(_counter));
           setState(() {
             _newCounter = _counter;
           });
